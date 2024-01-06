@@ -27,7 +27,7 @@ export function JobPreview(props: JobPreviewProps) {
     const loggedIn  = props.loggedIn;
    
     
-    var onViewDetails = async (event: FormEvent<HTMLFormElement>) => {
+    var onViewDetails = async (event: any) => {
         alert("Placeholder Data")
     }
   
