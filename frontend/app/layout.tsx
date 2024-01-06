@@ -5,6 +5,9 @@ import Link from "next/link";
 import styles from "@/app/page.module.css";
 import { cookies } from "next/headers";
 
+import SignInButton from "@/app/components/SignInButton";
+import SignOutButton from "@/app/components/SignOutButton";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -13,7 +16,7 @@ export const metadata: Metadata = {
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/users", label: "User List" },
+  // { href: "/users", label: "User List" },
 ];
 
 export default function RootLayout({
@@ -34,19 +37,10 @@ export default function RootLayout({
                   {label}
                 </Link>
               ))}
+              
             </div>
 
-            {isLoggedIn ? (
-              <form action="/auth/logout" method="post">
-                <button type="submit">Logout</button>
-              </form>
-            ) : (
-              <form action="/auth/login" method="post">
-                <input type="text" placeholder="Email" name="email" />
-                <input type="password" placeholder="Password" name="password" />
-                <button type="submit">Login</button>
-              </form>
-            )}
+            <SignInButton loggedin={isLoggedIn}/>
           </nav>
         </header>
 

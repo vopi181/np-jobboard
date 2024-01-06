@@ -54,14 +54,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 6rem 0rem;
+  
 }
 
 .hero h1 {
   font-size: 3rem;
   font-weight: 300;
   padding: 20px;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 }
 
 .grid {
@@ -102,4 +102,22 @@
 
 .card:hover span {
   transform: translateX(4px);
+}
+
+
+.jobheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.detailsbutton {
+  background: var(--white);
+  color: var(--black);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: large;
 }

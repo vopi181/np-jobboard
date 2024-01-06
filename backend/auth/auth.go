@@ -2,40 +2,56 @@ package auth
 
 import (
 	"context"
-	"encore.dev/beta/auth"
-	"encore.dev/beta/errs"
+	"fmt"
+	"math/rand"
+
+	"encore.app/backend/db"
+	"encore.app/backend/user"
 	"encore.dev/rlog"
 )
 
 const TOKEN = "dummy-token"
 
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Token string `json:"token"`
 }
 
 type LoginResponse struct {
 	Token string `json:"token"`
 }
 
+type Data struct {
+	Email string
+	Name  string
+}
+
 //encore:api public method=POST path=/auth/login
 func Login(ctx context.Context, params *LoginRequest) (*LoginResponse, error) {
 	// Validate the email and password, for example by calling Firebase Auth: https://encore.dev/docs/how-to/firebase-auth
-
-	rlog.Info("User login", "email", params.Email)
-	return &LoginResponse{Token: TOKEN}, nil
-}
-
-//encore:authhandler
-func AuthHandler(ctx context.Context, token string) (auth.UID, error) {
-	// Validate the token and look up the user id, for example by calling Firebase Auth: https://encore.dev/docs/how-to/firebase-auth
-
-	if token != TOKEN {
-		return "", &errs.Error{
-			Code:    errs.Unauthenticated,
-			Message: "invalid token",
-		}
+	rlog.Info("User Login", "params", params)
+	rlog.Info("User login", "token", params.Token)
+	pool, err := db.Get(context.Background())
+	if err != nil {
+		return nil, err
 	}
+	email, err := user.GetFireBaseEmail(ctx, params.Token)
+	if err != nil {
+		return nil, err
+	}
+	rows, err := pool.Query(ctx, "select * from users where email = $1", email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	if rows.Next() == false {
+		// generate random ID
 
-	return "user-id", nil
+		// insert user
+		_, err := pool.Exec(ctx, "insert into users (email, id) values ($1, $2)", email, fmt.Sprintf("%d", rand.Intn(1000000)))
+		if err != nil {
+			return nil, err
+		}
+
+	}
+	return &LoginResponse{Token: params.Token}, nil
 }
