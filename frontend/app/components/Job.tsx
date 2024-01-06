@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import styles from "@/app/page.module.css";
 import Image from "next/image"
 import Link from "next/link";
